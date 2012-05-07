@@ -6,6 +6,6 @@ if [ $UID != "0" ]; then
 fi
 
 echo   "Installing to $PREFIX/usr/bin ..."
-install -D -m544 remorem "$PREFIX/usr/bin"
-install -D -m544 pullins "$PREFIX/usr/bin"
-install -D -m544 pullup  "$PREFIX/usr/bin"
+install -D -m544 remorem "$PREFIX/usr/bin/remorem"
+install -D -m544 pullins "$PREFIX/usr/bin/pullins"
+install -D -m544 pullup  "$PREFIX/usr/bin/pullup"
