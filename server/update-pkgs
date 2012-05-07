@@ -1,0 +1,22 @@
+#!/bin/sh
+# update-pkgs - brings packages inside the remote cache up to date
+# v1
+
+# source configuration
+source ../config/nsc-server.conf
+
+# the main part
+# bring the db up to date
+sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Sy
+
+# build a list of all explicitly installed packages
+cd "$REPO_DIR/nsc"
+sort -u `/bin/ls *.pkglist` >> $DUMP
+
+# clean up all the old files
+sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Sc
+# and download the new packages
+sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Sw `cat $DUMP`
+
+# and clean up
+rm $DUMP

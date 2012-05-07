@@ -1,0 +1,30 @@
+#!/bin/sh
+# download-pkgs - download packages into the remote cache
+# v1
+
+# source configuration
+source ../config/nsc-server.conf
+
+# script variables
+PKGS=("$@")
+CONNECTING_HOST="${PKGS[$#-1]}"
+unset PKGS[$#-1]
+
+# the functionality
+echo "Download of $(($#-1)) packages requested"
+
+if [ "$CONNECTING_HOST" == "" ]; then
+	echo "Could not verify request origin! Exiting..."
+	exit 1
+fi
+
+echo "Starting pacman...downloading each requested file piecemeal"
+
+for PKG in ${PKGS[@]}; do
+	sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Sw $PKG
+
+	# if pacman returned no errors and the file isn't already in the file list, put it there
+	if [ "$?" == "0" ] && ! grep -q $PKG "$REPO_DIR/nsc/$CONNECTING_HOST.pkglist"; then
+		echo $PKG >> "$REPO_DIR/nsc/$CONNECTING_HOST.pkglist"
+	fi
+done

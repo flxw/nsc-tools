@@ -1,0 +1,28 @@
+#!/bin/sh
+# pullins - pull & install
+# v1
+
+# script variables, parse config here
+. ../config/nsc-client.conf
+
+# functions
+
+# preliminary checks
+if [ "$UID" != "0" ]; then
+	echo "You need to be root to use this program! Exiting..."
+	exit 1
+fi
+
+# download the packages on the server side
+echo "Action on the remote server"
+ssh $REPO_USER@$REPO_IP /home/$REPO_USER/download-pkgs "$@" "$HOSTNAME"
+
+# mount the NFS share on our side and install the packages
+echo "Actions taking place on this machine"
+mkdir "$MOUNTPOINT" && echo "Creating mountpoint..." &&
+echo "Mounting remote cache..." && mount -t cifs //"$REPO_IP/$REPO_NAME" "$MOUNTPOINT" -o user=none,password=none &&
+echo "Installing..." && pacman --dbpath "$MOUNTPOINT/db" --cachedir "$MOUNTPOINT" -S "$@"
+
+# Unmount anyway
+echo "Unmounting remote cache..." && umount "$MOUNTPOINT" && 
+echo "Removing mountpoint..." && rm -r "$MOUNTPOINT"
