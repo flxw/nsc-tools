@@ -3,7 +3,7 @@
 # v1
 
 # source configuration
-source /etc/nsc-tools/nsc-server.conf
+source ~/nsc-server.conf
 
 # the main part
 # bring the db up to date
