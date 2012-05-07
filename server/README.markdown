@@ -44,7 +44,7 @@ Installing a mirrorlist is very simple with [reflector](https://wiki.archlinux.o
 
 Login as your repository user and do the following
 
-	$ source ~/nsc-tools/server/nsc-server.config
+	$ source ~/nsc-tools/server/nsc-server.conf
 	$ cd $REPO_DIR/nsc
 	$ reflector -l 5 --sort rate --save mirrorlist
 	$ cd ..

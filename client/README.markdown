@@ -35,9 +35,10 @@ On the server:
 
 ## Usage
 After that, you can use:
-	* remorem, to remove packages
-	* pullins, to install packages
-	* pullup, to upgrade your system
+
+* remorem, to remove packages
+* pullins, to install packages
+* pullup, to upgrade your system
 
 Usage:
 
