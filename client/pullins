@@ -20,6 +20,8 @@ ssh $REPO_USER@$REPO_IP /home/$REPO_USER/download-pkgs "$@" "$HOSTNAME"
 # mount the NFS share on our side and install the packages
 echo "Actions taking place on this machine"
 mkdir "$MOUNTPOINT" && echo "Creating mountpoint..." &&
+/bin/ln -s "$MOUNTPOINT/cache/db/sync" "$MOUNTPOINT/db" && echo "Symlinking remote sync db..." &&
+/bin/ln -s "$LOCALDB" "$MOUNTPOINT/db" && echo "Symlinking local db..." &&
 echo "Mounting remote cache..." && mount -t cifs //"$REPO_IP/$REPO_NAME" "$MOUNTPOINT" -o user=none,password=none &&
 echo "Installing..." && pacman --dbpath "$MOUNTPOINT/db" --cachedir "$MOUNTPOINT" -S "$@"
 
