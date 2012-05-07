@@ -12,7 +12,7 @@ if [ "$UID" != "0" ]; then
 fi
 
 # Remove the packages locally
-echo "Actions taking place on this machine"
+echo "Removing the packages locally..."
 pacman -Rscn "$@"
 
 # This step is needed so that package dependencies are handled correctly
