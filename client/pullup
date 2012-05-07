@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # pullup - pull updates
 # v1
 
@@ -19,6 +19,17 @@ mkdir -p "$MOUNTPOINT/cache" "$MOUNTPOINT/db" && echo "Creating mount directory 
 echo "Mounting remote cache..." && mount -t cifs "//$REPO_IP/$REPO_NAME" "$MOUNTPOINT/cache" -o user=none,password=none &&
 echo "Updating" && pacman --dbpath "$MOUNTPOINT/db" --cachedir "$MOUNTPOINT/cache" -Su
 
+UPDATE_SUCCESS="$?"
+
 # unmount anyway
 echo "Unmounting remote cache..." && umount "$MOUNTPOINT/cache" && 
 echo "Removing mountpoint..." && rm -r "$MOUNTPOINT"
+
+# This step is needed to handle dependencies correctly
+# but only do if the update was successful
+if [ "$UPDATE_SUCCESS" == "0" ]; then
+	echo "Creating a new package list and copying it over to the server..."
+	comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > /tmp/`hostname`.pkglist
+	scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:$REPO_DIR/nsc"
+	rm  /tmp/`hostname`.pkglist
+fi

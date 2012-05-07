@@ -1,11 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 # pullins - pull & install
-# v1
+# v2
 
 # script variables, parse config here
 source /etc/nsc-client.conf
-
-# functions
 
 # preliminary checks
 if [ "$UID" != "0" ]; then
@@ -15,7 +13,7 @@ fi
 
 # download the packages on the server side
 echo "Action on the remote server"
-ssh $REPO_USER@$REPO_IP /home/$REPO_USER/download-pkgs "$@" "$HOSTNAME"
+ssh $REPO_USER@$REPO_IP /home/$REPO_USER/download-pkgs "$@"
 
 # mount the NFS share on our side and install the packages
 echo "Actions taking place on this machine"
@@ -28,3 +26,10 @@ echo "Installing..." && pacman --dbpath "$MOUNTPOINT/db" --cachedir "$MOUNTPOINT
 # Unmount anyway
 echo "Unmounting remote cache..." && umount "$MOUNTPOINT/cache" && 
 echo "Removing mountpoint..." && rm -r "$MOUNTPOINT"
+
+# This step is needed so that package dependencies are handled correctly
+echo "Creating a new package list and copying it over to the server"
+comm -23 <(pacman -Qq|sort) <(pacman-Qmq|sort) > /tmp/`hostname`.pkglist
+scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:$REPO_DIR/nsc"
+rm  /tmp/`hostname`.pkglist
+

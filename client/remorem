@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # remorem - remote removal of packages
 # v1
 
@@ -11,10 +11,15 @@ if [ "$UID" != "0" ]; then
 	exit 1
 fi
 
-# download the packages on the server side
-echo "Action on the remote server"
-ssh $REPO_USER@$REPO_IP /home/$REPO_USER/remove-pkgs "$@" "$HOSTNAME"
-
-# mount the NFS share on our side and install the packages
+# Remove the packages locally
 echo "Actions taking place on this machine"
 pacman -Rscn "$@"
+
+# This step is needed so that package dependencies are handled correctly
+# but only do it, if the remove was successful
+if [ "$?" == "0" ]; then
+	echo "Creating a new package list and copying it over to the server"
+	comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > /tmp/`hostname`.pkglist
+	scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:$REPO_DIR/nsc"
+	rm  /tmp/`hostname`.pkglist
+fi
