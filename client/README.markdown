@@ -24,24 +24,25 @@ what packages you have installed, so that it can pull the updates.
 To do so, generate a list of packages and copy it over to the machine.
 
 	# source /etc/nsc-client.conf
-	# comm -23 <(pacman -Qeq|sort) <(pacman -Qmq|sort) > `hostname`.pkglist
+	# comm -23 <(pacman -Qq|sort) <(pacman-Qmq|sort) > `hostname`.pkglist
 	# scp `hostname`.pkglist "$REPO_USER@$REPO_IP"
 
 Then, logon to the machine and copy the file into `$REPO_DIR/nsc`.
-On the server:
+On the server, do:
 
 	# source ~/nsc-tools/server/config/nsc-server.conf
 	# mv *.pkglist "$REPO_DIR/nsc"
 
 ## Usage
-After that, you can use:
 
-* remorem, to remove packages
-* pullins, to install packages
-* pullup, to upgrade your system
+	pullins <packages>
 
-Usage:
+To install packages. Will download them onto the remote cache.
 
 	remorem <packages>
-	pullins <packages>
+
+To remove pacakges
+
 	pullup
+
+Will update the system using the remote caches sync db.
