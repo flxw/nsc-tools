@@ -13,10 +13,12 @@ sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Sy
 cd "$REPO_DIR/nsc"
 sort -u `/bin/ls *.pkglist` >> $DUMP
 
-# clean up all the old files
-sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Sc
-# and download the new packages
-sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Sw `cat $DUMP`
+if ! pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Qu; then
+	# clean up all the old files
+	sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Sc
+	# and download the new packages
+	sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Sw `cat $DUMP`
+fi
 
 # and clean up
 rm $DUMP
