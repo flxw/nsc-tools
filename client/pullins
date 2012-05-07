@@ -3,7 +3,7 @@
 # v1
 
 # script variables, parse config here
-. ../config/nsc-client.conf
+source /etc/nsc-tools/nsc-client.conf
 
 # functions
 

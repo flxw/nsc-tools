@@ -3,7 +3,7 @@
 # v1
 
 # source configuration
-source ../config/nsc-server.conf
+source /etc/nsc-tools/nsc-server.conf
 
 # script variables
 PKGS=("$@")

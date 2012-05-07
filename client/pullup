@@ -3,7 +3,7 @@
 # v1
 
 # script variables, parse config here
-source ../config/nsc-client.conf
+source /etc/nsc-tools/nsc-client.conf
 
 # preliminary checks
 if [ "$UID" != "0" ]; then
