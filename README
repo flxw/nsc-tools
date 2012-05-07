@@ -1,0 +1,8 @@
+If you use ArchLinux on several machines in your home network,
+you'll often download the same packages several times for different machines
+when doing a system update.
+
+Wouldn't it be nice to have a central shared cache that always gives
+you the newest packages without downloading any unneded stuf?
+If you own a device that can serve files over the network and is always
+online, this project might be interesting for you.
