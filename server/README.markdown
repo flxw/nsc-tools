@@ -49,3 +49,13 @@ Login as your repository user and do the following
 	$ reflector -l 5 --sort rate --save mirrorlist
 	$ cd ..
 	$ sudo pacman --dbpath db --config nsc/pacman.conf --noconfirm -Syy
+
+## cronjob setup
+All that remains to be done is the cronjob setup, so updates are downloaded automatically.
+To be able to update your clients once a day, put the following
+in your repository user's crontab:
+
+    0       3       *       *       *       ~/update-pkgs > /dev/null 
+
+This will update the packages inside the repository every day at 3:00 AM.
+Additionally, it will purge old and unneeded packages from the cache.

@@ -11,6 +11,11 @@ if [ "$UID" != "0" ]; then
 	exit 1
 fi
 
+if [ $# -eq 0 ]; then
+    echo "You should pass the names of some packages you want to install! Exiting..."
+    exit 2
+fi
+
 # download the packages on the server side
 echo "Action on the remote server"
 ssh $REPO_USER@$REPO_IP /home/$REPO_USER/download-pkgs "$@"

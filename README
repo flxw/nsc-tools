@@ -3,7 +3,7 @@ you'll often download the same packages several times for different machines
 when doing a system update.
 
 Wouldn't it be nice to have a central shared cache that always gives
-you the newest packages without downloading any unneded stuf?
+you the newest packages without downloading any unneeded stuff?
 If you own a device that can serve files over the network and is always
 online, this project might be interesting for you.
 
@@ -16,10 +16,10 @@ On the client-side, three capabilities are provided:
 	- installing packages
 	- updating the system
 
-If installing a package, th client will connect to the server using SSH
+If installing a package, the client will connect to the server using SSH
 and initiate the package download on the server. If finished, the connection
 is terminated and the shared cache is mounted. Then, the package is installed and
-the cache is unmounted. Thus, you have local package database and can still run
+the cache is unmounted. Thus, you have a local package database and can still run
 system updates if the network cache is down.
 
 If removing a package, the client connects to the server and

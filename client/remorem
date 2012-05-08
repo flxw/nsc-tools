@@ -11,6 +11,11 @@ if [ "$UID" != "0" ]; then
 	exit 1
 fi
 
+if [ $# -eq 0 ]; then
+    echo "Pass at least one package that should be removed! Exiting..."
+    exit 2
+fi
+
 # Remove the packages locally
 echo "Removing the packages locally..."
 pacman -Rscn "$@"
