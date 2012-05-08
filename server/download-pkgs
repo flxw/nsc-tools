@@ -6,12 +6,6 @@
 source ~/nsc-tools/server/config/nsc-server.conf
 
 # the main functionality
-echo "Download of $(($#-1)) packages requested"
-
-if [ "$CONNECTING_HOST" == "" ]; then
-	echo "Could not verify request origin! Exiting..."
-	exit 1
-fi
-
+echo "Download of $# packages requested"
 echo "Starting pacman...downloading all requested files at once"
 sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Sw $@
