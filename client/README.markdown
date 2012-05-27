@@ -9,7 +9,7 @@ Then run the install script.
 	# cd /tmp
 	# git clone git://github.com/n0stradamus/nsc-tools.git
 	# cd client
-	# ./install.sh
+	# PREFIX="" ./install.sh
 
 This will copy three scripts to `/usr/bin`, if no PREFIX is specified.
 After having done that, edit the configuration in `client/config`
@@ -19,15 +19,15 @@ to your liking and save it to `/etc`:
 	# cp client/config/nsc-client.conf /etc
 
 ## Registering at the server
-It is not really a registration yet. You simply tell the server
-what packages you have installed, so that it can pull the updates.
-To do so, generate a list of packages and copy it over to the machine.
+You need to have the login credentials for the repository user on the
+server machine (you need to have it anyway).
+This will try to update your machine. Even if no updates are installed,
+the script will copy over a new list of packages to the server.
+For now, this small bug will save us some work :)
 
-	# source /etc/nsc-client.conf
-	# comm -23 <(pacman -Qq|sort) <(pacman-Qmq|sort) > `hostname`.pkglist
-	# scp `hostname`.pkglist "$REPO_USER@$REPO_IP"
+	# pullup
 
-Then, logon to the machine and copy the file into `$REPO_DIR/nsc`.
+Then, logon to the machine (as the repo user) and copy the file into `$REPO_DIR/nsc`.
 On the server, do:
 
 	# source ~/nsc-tools/server/config/nsc-server.conf
@@ -38,11 +38,15 @@ On the server, do:
 	pullins <packages>
 
 To install packages. Will download them onto the remote cache.
+After the download has finished, the cache will be mounted locally and 
+the package(s) will be installed.
 
 	remorem <packages>
 
-To remove pacakges
+This command will remove the package locally and push an updated
+package list to the server.
 
 	pullup
 
 Will update the system using the remote caches sync db.
+After the update, an updated package list will be pushed to the server.

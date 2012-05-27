@@ -21,13 +21,13 @@ Configure your ssh daemon, so that you can login as your repo user from outside
 using password authentication.
 
 ## nsc-tools setup
-Then, login as the new user and clone the repository into his home directory.
+Then, login as the new repository user and clone the repository into his home directory.
 
 	# su repoman
 	$ git clone git://github.com/n0stradamus/nsc-tools.git
 	$ cd server
 
-Now, edit `nsc-tools/server/config/nsc-server.conf` to your liking.
+Now, edit `~/nsc-tools/server/config/nsc-server.conf` to your liking.
 Then, do:
 
 	$ cd ~/nsc-tools/server
@@ -42,7 +42,8 @@ Now, you will have a directory, where the packages will be downloaded.
 What is still missing is a mirrorlist and a sync database.
 Installing a mirrorlist is very simple with [reflector](https://wiki.archlinux.org/index.php/Reflector).
 
-Login as your repository user and do the following
+Login as your repository user and do the following to create a 
+new mirrorlist and update the repository's pacman sync database.
 
 	$ source ~/nsc-tools/server/nsc-server.conf
 	$ cd $REPO_DIR/nsc

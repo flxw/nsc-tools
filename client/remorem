@@ -1,6 +1,6 @@
 #!/bin/bash
 # remorem - remote removal of packages
-# v1
+# Last Edit: 27.05.2012
 
 # script variables, parse config here
 source /etc/nsc-client.conf
@@ -25,6 +25,6 @@ pacman -Rscn "$@"
 if [ "$?" == "0" ]; then
 	echo "Creating a new package list and copying it over to the server"
 	comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > /tmp/`hostname`.pkglist
-	scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:$REPO_DIR/nsc"
+	scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:nsc_dir_link"
 	rm  /tmp/`hostname`.pkglist
 fi

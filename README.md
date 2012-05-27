@@ -1,3 +1,4 @@
+## Intro
 If you use ArchLinux on several machines in your home network,
 you'll often download the same packages several times for different machines
 when doing a system update.
@@ -7,14 +8,15 @@ you the newest packages without downloading any unneeded stuff?
 If you own a device that can serve files over the network and is always
 online, this project might be interesting for you.
 
+## What capabilites do the nsc-tools provide?
 The network device will serve packages through a read-only samba/NFS-share.
 It will maintain package lists for each registered machine and will pull
 updates if available.
 
 On the client-side, three capabilities are provided:
-	- removing packages
-	- installing packages
-	- updating the system
+* removing packages
+* installing packages
+* updating the system
 
 If installing a package, the client will connect to the server using SSH
 and initiate the package download on the server. If finished, the connection
@@ -30,5 +32,5 @@ to avoid that. Only if all systems don't use a specific package, it is not downl
 
 If updating a client, the share will simply be mounted and the updates will be installed.
 Note that all these operations depend on the sync database of the server to provide
-consistency. If your local sync database is more up to date than the server's,
+consistency. If your local sync database is more up to date than the servers,
 an installation procedure would fail.
