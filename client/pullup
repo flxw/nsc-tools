@@ -1,8 +1,8 @@
 #!/bin/bash
 # pullup - pull updates
-# v1
+# Last Edit: 27.05.2012
 
-# script variables, parse config here
+# parse config here
 source /etc/nsc-client.conf
 
 # preliminary checks
@@ -16,8 +16,10 @@ echo "Actions taking place on this machine"
 mkdir -p "$MOUNTPOINT/cache" "$MOUNTPOINT/db" && echo "Creating mount directory structure..." &&
 /bin/ln -s "$MOUNTPOINT/cache/db/sync" "$MOUNTPOINT/db" && echo "Symlinking remote sync db..." &&
 /bin/ln -s "$LOCALDB" "$MOUNTPOINT/db" && echo "Symlinking local db..." &&
-echo "Mounting remote cache..." && mount -t cifs "//$REPO_IP/$REPO_NAME" "$MOUNTPOINT/cache" -o user=none,password=none &&
-echo "Updating" && pacman --dbpath "$MOUNTPOINT/db" --cachedir "$MOUNTPOINT/cache" -Su
+echo "Mounting remote cache..." &&
+mount -t cifs "//$REPO_IP/$REPO_NAME" "$MOUNTPOINT/cache" -o user=none,password=none &&
+echo "Updating" &&
+pacman --dbpath "$MOUNTPOINT/db" --cachedir "$MOUNTPOINT/cache" -Su
 
 UPDATE_SUCCESS="$?"
 
@@ -30,6 +32,6 @@ echo "Removing mountpoint..." && rm -r "$MOUNTPOINT"
 if [ "$UPDATE_SUCCESS" == "0" ]; then
 	echo "Creating a new package list and copying it over to the server..."
 	comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > /tmp/`hostname`.pkglist
-	scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:$REPO_DIR/nsc"
+	scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:nsc_dir_link"
 	rm  /tmp/`hostname`.pkglist
 fi
