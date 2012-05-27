@@ -4,7 +4,7 @@ with the nsc tools.
 
 ## Installing
 Change to a temporary directory and clone the repository.
-Then run the install script.
+Change into the 'client' directory.
 
 	# cd /tmp
 	# git clone git://github.com/n0stradamus/nsc-tools.git
@@ -12,11 +12,10 @@ Then run the install script.
 	# PREFIX="" ./install.sh
 
 This will copy three scripts to `/usr/bin`, if no PREFIX is specified.
-After having done that, edit the configuration in `client/config`
-to your liking and save it to `/etc`:
+Now edit the configuration file located at `/etc/nsc-tools/nsc-client.conf`
+(again, only if no PREFIX was specified). 
 
-	# vim client/config/nsc-client.conf
-	# cp client/config/nsc-client.conf /etc
+The file is well commented, so finding your way round should not be too hard.
 
 ## Registering at the server
 For this step you need to have the login credentials of the user
