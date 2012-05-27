@@ -20,11 +20,4 @@ fi
 echo "Removing the packages locally..."
 pacman -Rscn "$@"
 
-# This step is needed so that package dependencies are handled correctly
-# but only do it, if the remove was successful
-if [ "$?" == "0" ]; then
-	echo "Creating a new package list and copying it over to the server"
-	comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > /tmp/`hostname`.pkglist
-	scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:nsc_dir_link"
-	rm  /tmp/`hostname`.pkglist
-fi
+push_pkglist_if_neccessary
