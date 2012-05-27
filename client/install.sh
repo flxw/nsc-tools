@@ -12,4 +12,4 @@ install -D -m755 pullup  "$PREFIX/usr/bin/pullup"
 
 echo "Installing configuration to $PREFIX/etc/nsc-tools..."
 install -D -m644 functions "$PREFIX/etc/nsc-tools/functions"
-install -D -m644 nsc-client.conf "$PREFIX/etc/nsc-tools/nsc-client.conf"
+install -D -m644 config/nsc-client.conf "$PREFIX/etc/nsc-tools/nsc-client.conf"
