@@ -2,8 +2,10 @@
 # pullins - pull & install
 # Last Edit: 27.05.2012
 
-# script variables, parse config here
-source /etc/nsc-client.conf
+# read configuration and functions
+source /etc/nsc-tools/nsc-client.conf
+source /etc/nsc-tools/functions
+
 
 # preliminary checks
 if [ "$UID" != "0" ]; then
@@ -16,27 +18,19 @@ if [ $# -eq 0 ]; then
     exit 2
 fi
 
+# handle SIGINT
+trap cleanup INT
+
 # download the packages on the server side
 echo "Action on the remote server"
 ssh $REPO_USER@$REPO_IP /home/$REPO_USER/download-pkgs "$@"
 
 # mount the NFS share on our side and install the packages
-echo "Actions taking place on this machine"
-mkdir -p "$MOUNTPOINT/db" "$MOUNTPOINT/cache" &&
-echo "Creating mountpoint directory structure..." &&
-/bin/ln -s "$MOUNTPOINT/cache/db/sync" "$MOUNTPOINT/db" && echo "Symlinking remote sync db..." &&
-/bin/ln -s "$LOCALDB" "$MOUNTPOINT/db" && echo "Symlinking local db..." &&
-echo "Mounting remote cache..." && 
-mount -t cifs //"$REPO_IP/$REPO_NAME" "$MOUNTPOINT/cache" -o user=none,password=none &&
+echo "Actions taking place on this machine" &&
+mount_share &&
 echo "Installing..." &&
 pacman --dbpath "$MOUNTPOINT/db" --cachedir "$MOUNTPOINT/cache" -S "$@"
 
-# Unmount anyway
-echo "Unmounting remote cache..." && umount "$MOUNTPOINT/cache" && 
-echo "Removing mountpoint..." && rm -r "$MOUNTPOINT"
+push_pkglist_if_neccessary
 
-# This step is needed so that package dependencies are handled correctly
-echo "Creating a new package list and copying it over to the server"
-comm -23 <(pacman -Qq|sort) <(pacman-Qmq|sort) > /tmp/`hostname`.pkglist
-scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:nsc_dir_link"
-rm  /tmp/`hostname`.pkglist
+cleanup

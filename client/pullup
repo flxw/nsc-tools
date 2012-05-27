@@ -3,7 +3,8 @@
 # Last Edit: 27.05.2012
 
 # parse config here
-source /etc/nsc-client.conf
+source /etc/nsc-tools/nsc-client.conf
+source /etc/nsc-tools/functions
 
 # preliminary checks
 if [ "$UID" != "0" ]; then
@@ -11,27 +12,18 @@ if [ "$UID" != "0" ]; then
 	exit 1
 fi
 
+# handle interrupt signals
+trap cleanup INT
+
 # mount the share and pull the updates
 echo "Actions taking place on this machine"
-mkdir -p "$MOUNTPOINT/cache" "$MOUNTPOINT/db" && echo "Creating mount directory structure..." &&
-/bin/ln -s "$MOUNTPOINT/cache/db/sync" "$MOUNTPOINT/db" && echo "Symlinking remote sync db..." &&
-/bin/ln -s "$LOCALDB" "$MOUNTPOINT/db" && echo "Symlinking local db..." &&
-echo "Mounting remote cache..." &&
-mount -t cifs "//$REPO_IP/$REPO_NAME" "$MOUNTPOINT/cache" -o user=none,password=none &&
-echo "Updating" &&
+mount_share &&
+echo "Updating..." &&
 pacman --dbpath "$MOUNTPOINT/db" --cachedir "$MOUNTPOINT/cache" -Su
-
-UPDATE_SUCCESS="$?"
-
-# unmount anyway
-echo "Unmounting remote cache..." && umount "$MOUNTPOINT/cache" && 
-echo "Removing mountpoint..." && rm -r "$MOUNTPOINT"
 
 # This step is needed to handle dependencies correctly
 # but only do if the update was successful
-if [ "$UPDATE_SUCCESS" == "0" ]; then
-	echo "Creating a new package list and copying it over to the server..."
-	comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > /tmp/`hostname`.pkglist
-	scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:nsc_dir_link"
-	rm  /tmp/`hostname`.pkglist
-fi
+push_pkglist_if_neccessary
+
+# remove mountpoint and the mount itself
+cleanup

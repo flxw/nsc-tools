@@ -1,0 +1,35 @@
+# THIS  FILE IS PART OF THE NSC-TOOLS SUITE
+# IT SHOULD NOT BE EDITED TO CONFIGURE THE SUITE
+# INSTEAD, PLEASE FILE A BUG REPORT SO EVERYONE
+# CAN ENJOY YOUR ENHANCEMENTS
+
+
+cleanup() {
+    echo "Unmounting the remote cache..."
+    umount "$MOUNTPOINT/cache" > /dev/null
+    echo "Removing the mountpoint"
+    rm -r "$MOUNTPOINT" > /dev/null
+}
+
+mount_share() {
+    mkdir -p "$MOUNTPOINT/cache" "$MOUNTPOINT/db" && echo "Creating mount directory structure..." &&
+        /bin/ln -s "$MOUNTPOINT/cache/db/sync" "$MOUNTPOINT/db" && echo "Symlinking remote sync db..." &&
+        /bin/ln -s "$LOCALDB" "$MOUNTPOINT/db" && echo "Symlinking local db..." &&
+        echo "Mounting remote cache..." &&
+        mount -t cifs "//$REPO_IP/$REPO_NAME" "$MOUNTPOINT/cache" -o user=none,password=none
+
+    return $?
+}
+
+push_pkglist_if_neccessary() {
+	comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > /tmp/`hostname`.pkglist
+    
+    if ! diff -q /tmp/`hostname`.pkglist "$MOUNTPOINT/cache/nsc/`hostname`.pkglist" > /dev/null; then
+        echo "Copying a new package list to the server..."
+        scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:nsc_dir_link"
+    fi
+    
+    rm  /tmp/`hostname`.pkglist
+}
+
+# vim: ft=sh
