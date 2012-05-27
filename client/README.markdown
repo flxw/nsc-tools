@@ -19,19 +19,12 @@ to your liking and save it to `/etc`:
 	# cp client/config/nsc-client.conf /etc
 
 ## Registering at the server
-You need to have the login credentials for the repository user on the
-server machine (you need to have it anyway).
-This will try to update your machine. Even if no updates are installed,
-the script will copy over a new list of packages to the server.
-For now, this small bug will save us some work :)
+For this step you need to have the login credentials of the user
+we created on the repository server. Do the following to make the
+server aware of the packages you have installed locally.
 
-	# pullup
-
-Then, logon to the machine (as the repo user) and copy the file into `$REPO_DIR/nsc`.
-On the server, do:
-
-	# source ~/nsc-tools/server/config/nsc-server.conf
-	# mv *.pkglist "$REPO_DIR/nsc"
+	# source /etc/nsc-tools/functions
+    # push_pkglist_if_neccessary
 
 ## Usage
 
