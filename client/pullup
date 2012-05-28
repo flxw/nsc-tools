@@ -1,6 +1,6 @@
 #!/bin/bash
 # pullup - pull updates
-# Last Edit: 27.05.2012
+# Last Edit: 28.05.2012
 
 # parse config here
 source /etc/nsc-tools/nsc-client.conf
@@ -16,9 +16,9 @@ fi
 trap cleanup INT
 
 # mount the share and pull the updates
-echo "Actions taking place on this machine"
+print_color_msg "Actions taking place on this machine"
 mount_share &&
-echo "Updating..." &&
+print_color_msg "Starting LOCAL pacman for update..." &&
 pacman --dbpath "$MOUNTPOINT/db" --cachedir "$MOUNTPOINT/cache" -Su
 
 # This step is needed to handle dependencies correctly

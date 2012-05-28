@@ -6,9 +6,10 @@
 
 cleanup() {
     echo "Unmounting the remote cache..."
-    umount "$MOUNTPOINT/cache" > /dev/null
+    umount "$MOUNTPOINT/cache" 2&> /dev/null
     echo "Removing the mountpoint"
-    rm -r "$MOUNTPOINT" > /dev/null
+    rm -r "$MOUNTPOINT" 2&> /dev/null
+    exit;
 }
 
 mount_share() {
@@ -30,6 +31,10 @@ push_pkglist_if_neccessary() {
     fi
     
     rm  /tmp/`hostname`.pkglist
+}
+
+print_color_msg() {
+    echo -e "\E[$MSG_COLOR m$@\E[0m"
 }
 
 # vim: ft=sh
