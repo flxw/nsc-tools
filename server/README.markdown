@@ -28,7 +28,7 @@ Then, login as the new repository user and clone the repository into his home di
 	$ cd server
 
 Now, edit `~/nsc-tools/server/config/nsc-server.conf` to your liking.
-Then, do:
+Afterwards, do:
 
 	$ cd ~/nsc-tools/server
 	$ ./install.sh
