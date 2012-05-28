@@ -22,8 +22,10 @@ For this step you need to have the login credentials of the user
 we created on the repository server. Do the following to make the
 server aware of the packages you have installed locally.
 
-	# source /etc/nsc-tools/functions
-    # push_pkglist_if_neccessary
+    # source /etc/nsc-tools/nsc-client.conf
+	# comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > /tmp/`hostname`.pkglist
+    # scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:nsc_dir_link"
+    # rm /tmp/`hostname`.pkglist
 
 ## Usage
 
