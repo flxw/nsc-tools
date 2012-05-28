@@ -1,10 +1,12 @@
 #!/bin/bash
 # remorem - remote removal of packages
-# Last Edit: 27.05.2012
+# Last Edit: 28.05.2012
 
 # script variables, parse config here
 source /etc/nsc-tools/functions
 source /etc/nsc-tools/nsc-client.conf
+
+set -o nounset
 
 # preliminary checks
 if [ "$UID" != "0" ]; then

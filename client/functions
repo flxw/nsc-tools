@@ -3,7 +3,6 @@
 # INSTEAD, PLEASE FILE A BUG REPORT SO EVERYONE
 # CAN ENJOY YOUR ENHANCEMENTS
 
-
 cleanup() {
     echo "Unmounting the remote cache..."
     umount "$MOUNTPOINT/cache" 2&> /dev/null

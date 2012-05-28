@@ -6,6 +6,8 @@
 source /etc/nsc-tools/nsc-client.conf
 source /etc/nsc-tools/functions
 
+set -o nounset
+
 # preliminary checks
 if [ "$UID" != "0" ]; then
 	echo "You need to be root to use this program! Exiting..."
