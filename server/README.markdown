@@ -60,3 +60,7 @@ in your repository user's crontab:
 
 This will update the packages inside the repository every day at 3:00 AM.
 Additionally, it will purge old and unneeded packages from the cache.
+
+## SAMBA setup
+Set up your SAMBA so that it shares the freshly created pacman cache
+as a public read-only share.
