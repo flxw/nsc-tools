@@ -8,7 +8,6 @@ cleanup() {
     umount "$MOUNTPOINT/cache" 2&> /dev/null
     echo "Removing the mountpoint"
     rm -r "$MOUNTPOINT" 2&> /dev/null
-    exit;
 }
 
 mount_share() {
