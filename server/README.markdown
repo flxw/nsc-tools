@@ -63,4 +63,17 @@ Additionally, it will purge old and unneeded packages from the cache.
 
 ## SAMBA setup
 Set up your SAMBA so that it shares the freshly created pacman cache
-as a public read-only share.
+as a public read-only share. A minimal working example  of a SAMBA configuration would look like this:
+
+    [global]
+    workgroup     = WORKGROUP
+    server string = my_cache_server
+    netbios name  = my_cache_server
+    security      = share
+
+    [nsc]
+    path = /srv/samba/myrepo
+    read only = yes
+    public = yes
+    writable = no
+    force user = nobody
