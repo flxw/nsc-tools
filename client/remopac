@@ -1,0 +1,60 @@
+#!/bin/bash
+# remopac - use pacman with a remote cache
+# Last Edit: 08.07.2012
+
+# read configuration and functions
+source /etc/nsc-tools/nsc-client.conf
+source /etc/nsc-tools/functions
+
+set -o nounset
+
+UPDATE_ONLY=false
+PACARGS=""
+PKGS=""
+
+# preliminary checks
+if [ "$UID" != "0" ]; then
+	echo "You need to be root to use this program! Exiting..."
+    exit 1
+fi
+
+if [ $# -lt 2 ]; then
+    if ! echo $1 | egrep -q -- '-[RS].*u.*'; then
+        echo "You should pass the names of some packages you want to install/remove! Exiting..."
+        exit 2
+    else
+        UPDATE_ONLY=true
+    fi
+elif [ $# -eq 0 ]; then
+    echo "You need to pass options for pacman and the names of packages you want to install!"
+    exit 1
+fi
+
+# handle SIGINT
+trap cleanup INT
+
+# if not updating, seperate pacman args and package names
+if ! $UPDATE_ONLY; then
+    PACARGS=$1
+    PKGS=($@)
+    unset PKGS[0]
+fi
+
+# handle pacman options where we need the remote cache
+if echo $PACARGS | egrep -q -- '-S.*'; then
+    # download the packages on the server side
+    print_color_msg "Action on the remote cache server"
+    ssh $REPO_USER@$REPO_IP /home/$REPO_USER/download-pkgs "${PKGS[@]}"
+
+    # mount the NFS share on our side and install the packages
+    print_color_msg "Actions taking place on this machine"
+    mount_share &&
+    print_color_msg "Starting local pacman for install..." &&
+    pacman --dbpath "$MOUNTPOINT/db" --cachedir "$MOUNTPOINT/cache" $PACARGS ${PKGS[@]}
+else
+    print_color_msg "Removing packages: ${PKGS[@]}"
+    pacman $PACARGS ${PKGS[@]}
+fi
+
+push_pkglist_if_neccessary
+cleanup

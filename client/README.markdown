@@ -29,18 +29,9 @@ server aware of the packages you have installed locally.
 
 ## Usage
 
-	pullins <packages>
+    remopac <PACMAN_ARGUMENTS> [PACKAGES]
 
-To install packages. Will download them onto the remote cache.
-After the download has finished, the cache will be mounted locally and 
-the package(s) will be installed.
-
-	remorem <packages>
-
-This command will remove the package locally and push an updated
-package list to the server.
-
-	pullup
-
-Will update the system using the remote caches sync db.
-After the update, an updated package list will be pushed to the server.
+This command will wrap pacman functionality and simply make pacman use the network shared cache.
+You can pass it the normal pacman arguments like '-Su' or '-Rscn'. Do NOT try to play
+with pacmans '--config' or '--db' flag when using this script. You could seriously corrupt
+your pacman database or make it invalid.

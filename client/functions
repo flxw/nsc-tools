@@ -21,9 +21,14 @@ mount_share() {
 }
 
 push_pkglist_if_neccessary() {
+    if [ ! -d "$MOUNTPOINT" ]; then
+        return
+    fi
+
 	comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > "/tmp/$HOSTNAME.pkglist"
     
-    if ! diff -q /tmp/$HOSTNAME.pkglist "$MOUNTPOINT/cache/nsc/$HOSTNAME.pkglist" > /dev/null; then
+    if ! diff -q /tmp/$HOSTNAME.pkglist "$MOUNTPOINT/cache/nsc/$HOSTNAME.pkglist" > /dev/null
+    then
         echo "Copying a new package list to the server..."
         scp "/tmp/$HOSTNAME.pkglist" "$REPO_USER@$REPO_IP:nsc_dir_link"
     fi

@@ -6,9 +6,7 @@ if [ $UID != "0" ]; then
 fi
 
 echo   "Installing to $PREFIX/usr/bin ..."
-install -D -m755 remorem "$PREFIX/usr/bin/remorem"
-install -D -m755 pullins "$PREFIX/usr/bin/pullins"
-install -D -m755 pullup  "$PREFIX/usr/bin/pullup"
+install -D -m755 remopac "$PREFIX/usr/bin/remopac"
 
 echo "Installing configuration to $PREFIX/etc/nsc-tools..."
 install -D -m644 functions "$PREFIX/etc/nsc-tools/functions"
