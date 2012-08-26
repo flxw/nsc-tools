@@ -2,20 +2,14 @@
 
 source ./config/nsc-server.conf
 
-# create repo
-[ -d "$REPO_DIR" ] || mkdir -p "$REPO_DIR/db" "$REPO_DIR/nsc"
+echo "Symlinking pkg management scripts to $USER's home..."
+/bin/ln -s "$PWD/download-pkgs" ~/
+/bin/ln -s "$PWD/update-pkgs"   ~/ 
 
-if [ $? != "0" ]; then
-	echo "You will need to create $REPO_DIR using root privileges!"
-	exit 1
-fi
-
-echo "Installing pacman.conf..."
-sed "s:REPO_DIR:$REPO_DIR:" ./config/pacman.conf.template > "$REPO_DIR/nsc/pacman.conf"
-
-echo "Linking pkg management scripts to $REPO_USER's home..."
-/bin/ln "$PWD/download-pkgs" ~/
-/bin/ln "$PWD/update-pkgs"   ~/ 
-
-echo "Creating symlink in $REPO_USER's home to $REPO_DIR..."
+echo "Creating symlink in $USER's home to $REPO_DIR..."
 /bin/ln -s "$REPO_DIR/nsc" ~/nsc_dir_link
+
+# make the admin carry out these steps by hand
+echo 'Please carry out the following steps by hand - as root!'
+echo '# mkdir -p "$REPO_DIR/pacman-related/db'
+echo '# sed "s:REPO_DIR:$REPO_DIR:" ./config/pacman.conf.template > "$REPO_DIR/nsc/pacman.conf"'

@@ -1,6 +1,5 @@
 #!/bin/sh
 # download-pkgs - download packages into the remote cache
-# v2
 
 # source configuration
 source ~/nsc-tools/server/config/nsc-server.conf
@@ -8,4 +7,4 @@ source ~/nsc-tools/server/config/nsc-server.conf
 # the main functionality
 echo "Download of $# packages requested"
 echo "Starting pacman...downloading all requested files at once"
-sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/nsc/pacman.conf" -Sw $@
+sudo pacman --noprogressbar --noconfirm --config "$REPO_DIR/pacman-related/pacman.conf" -Sw $@
