@@ -1,18 +1,60 @@
 #!/bin/bash
 # remopac - use pacman with a remote cache
-# Last Edit: 08.07.2012
+# Last Edit: 28.08.2012
 
 # read configuration and functions
-source /etc/nsc-tools/nsc-client.conf
-source /etc/nsc-tools/functions
+source /etc/nsc-client.conf
 
+# bash opts
 set -o nounset
 
+# script variables
 UPDATE_ONLY=false
 PACARGS=""
 PKGS=""
 
-# preliminary checks
+# functions
+cleanup() {
+    echo "Unmounting the remote cache..."
+    umount "$MOUNTPOINT/cache" 2&> /dev/null
+    echo "Removing the mountpoint"
+    rm -r "$MOUNTPOINT" 2&> /dev/null
+}
+
+mount_share() {
+    echo "Creating mount directory structure..." && 
+    mkdir -p "$MOUNTPOINT/cache" "$MOUNTPOINT/db" && 
+    echo "Symlinking remote sync db..." &&
+    /bin/ln -s "$MOUNTPOINT/cache/pacman-related/db/sync" "$MOUNTPOINT/db" &&
+    echo "Symlinking local db..." &&
+    /bin/ln -s "$LOCALDB" "$MOUNTPOINT/db" &&
+    echo "Mounting remote cache..." &&
+    mount -t cifs "//$REPO_IP/$REPO_NAME" "$MOUNTPOINT/cache" -o user=none,password=none
+
+    return $?
+}
+
+push_pkglist_if_neccessary() {
+    if [ ! -d "$MOUNTPOINT" ]; then
+        return
+    fi
+
+	comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > "/tmp/$HOSTNAME.pkglist"
+    
+    if ! diff -q /tmp/$HOSTNAME.pkglist "$MOUNTPOINT/cache/nsc/$HOSTNAME.pkglist" > /dev/null; then
+        echo "Copying a new package list to the server..."
+        scp "/tmp/$HOSTNAME.pkglist" "$REPO_USER@$REPO_IP:nsc_dir_link"
+    fi
+    
+    rm  "/tmp/$HOSTNAME.pkglist"
+}
+
+print_color_msg() {
+    echo -e "\E[$MSG_COLOR m$@\E[0m"
+}
+
+
+# the actual script logic
 if [ "$UID" != "0" ]; then
 	echo "You need to be root to use this program! Exiting..."
     exit 1
@@ -44,12 +86,13 @@ fi
 if echo $PACARGS | egrep -q -- '-S.*'; then
     # download the packages on the server side
     print_color_msg "Action on the remote cache server"
-    ssh $REPO_USER@$REPO_IP /home/$REPO_USER/download-pkgs "${PKGS[@]}"
+    ssh $REPO_USER@$REPO_IP ~/download-pkgs "${PKGS[@]}"
 
     # mount the NFS share on our side and install the packages
-    print_color_msg "Actions taking place on this machine"
-    mount_share &&
-    print_color_msg "Starting local pacman for install..." &&
+    print_color_msg "Actions taking place on this machine" && mount_share
+
+    # Start the local pacman with the right arguments to use the mounted share
+    print_color_msg "Starting local pacman for install..."
     pacman --dbpath "$MOUNTPOINT/db" --cachedir "$MOUNTPOINT/cache" $PACARGS ${PKGS[@]}
 else
     print_color_msg "Removing packages: ${PKGS[@]}"
