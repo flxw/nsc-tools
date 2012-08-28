@@ -9,5 +9,4 @@ echo   "Installing to $PREFIX/usr/bin ..."
 install -D -m755 remopac "$PREFIX/usr/bin/remopac"
 
 echo "Installing configuration to $PREFIX/etc/nsc-tools..."
-install -D -m644 functions "$PREFIX/etc/nsc-tools/functions"
-install -D -m644 config/nsc-client.conf "$PREFIX/etc/nsc-tools/nsc-client.conf"
+install -D -m644 config/nsc-client.conf "$PREFIX/etc/nsc-client.conf"
