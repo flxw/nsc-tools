@@ -41,9 +41,9 @@ push_pkglist_if_neccessary() {
 
 	comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > "/tmp/$HOSTNAME.pkglist"
     
-    if ! diff -q /tmp/$HOSTNAME.pkglist "$MOUNTPOINT/cache/nsc/$HOSTNAME.pkglist" > /dev/null; then
+    if ! diff -q /tmp/$HOSTNAME.pkglist "$MOUNTPOINT/cache/pacman-related/pkglists/$HOSTNAME.pkglist" > /dev/null; then
         echo "Copying a new package list to the server..."
-        scp "/tmp/$HOSTNAME.pkglist" "$REPO_USER@$REPO_IP:nsc_dir_link"
+        scp "/tmp/$HOSTNAME.pkglist" "$REPO_USER@$REPO_IP:nsc_dir_link/pkglists"
     fi
     
     rm  "/tmp/$HOSTNAME.pkglist"
@@ -60,12 +60,13 @@ if [ "$UID" != "0" ]; then
     exit 1
 fi
 
-if [ $# -lt 2 ]; then
-    if ! echo $1 | egrep -q -- '-[RS].*u.*'; then
+if [ $# -eq 1 ]; then
+    if echo $1 | egrep -q -- '-Sy+.*'; then
+        echo "The '-y' flag to update the sync db must not be used! The sync db is mounted read-only from the server!"
+        exit 3
+    elif [ $1 != '-Su' ]; then
         echo "You should pass the names of some packages you want to install/remove! Exiting..."
         exit 2
-    else
-        UPDATE_ONLY=true
     fi
 elif [ $# -eq 0 ]; then
     echo "You need to pass options for pacman and the names of packages you want to install!"
@@ -75,18 +76,24 @@ fi
 # handle SIGINT
 trap cleanup INT
 
-# if not updating, seperate pacman args and package names
-if ! $UPDATE_ONLY; then
-    PACARGS=$1
+# seperate pacman args and package names
+PACARGS=$1
+PKGS=()
+
+if [ $# -gt 1 ]; then
     PKGS=($@)
     unset PKGS[0]
 fi
 
 # handle pacman options where we need the remote cache
 if echo $PACARGS | egrep -q -- '-S.*'; then
-    # download the packages on the server side
-    print_color_msg "Action on the remote cache server"
-    ssh $REPO_USER@$REPO_IP ~/download-pkgs "${PKGS[@]}"
+    # download the packages on the server side, if needed
+    if [ "${#PKGS[@]}" != "0" ]; then
+        print_color_msg "Action on the remote cache server"
+        ssh $REPO_USER@$REPO_IP ~/download-pkgs "${PKGS[@]}"
+    else
+        PKGS=""
+    fi
 
     # mount the NFS share on our side and install the packages
     print_color_msg "Actions taking place on this machine" && mount_share
