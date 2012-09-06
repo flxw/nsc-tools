@@ -11,18 +11,18 @@ Change into the 'client' directory.
 	# cd client
 	# PREFIX="" ./install.sh
 
-This will copy three scripts to `/usr/bin`, if no PREFIX is specified.
-Now edit the configuration file located at `/etc/nsc-tools/nsc-client.conf`
+This will copy a script called *remopac* to `/usr/bin/` if no PREFIX is specified.
+Now edit the configuration file located at `/etc/nsc-client.conf`
 (again, only if no PREFIX was specified). 
 
 The file is well commented, so finding your way round should not be too hard.
 
 ## Registering at the server
-For this step you need to have the login credentials of the user
-we created on the repository server. Do the following to make the
-server aware of the packages you have installed locally.
+For this step you need to have the login credentials for the repository user on
+the repository server. Do the following to make the server aware of the
+packages you have installed locally on the client side.
 
-    # source /etc/nsc-tools/nsc-client.conf
+    # source /etc/nsc-client.conf
 	# comm -23 <(pacman -Qq|sort) <(pacman -Qmq|sort) > /tmp/`hostname`.pkglist
     # scp /tmp/`hostname`.pkglist "$REPO_USER@$REPO_IP:nsc_dir_link"
     # rm /tmp/`hostname`.pkglist
