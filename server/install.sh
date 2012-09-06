@@ -12,4 +12,4 @@ echo "Creating symlink in $USER's home to $REPO_DIR..."
 # make the admin carry out these steps by hand
 echo 'Please carry out the following steps by hand - as root!'
 echo '# mkdir -p "$REPO_DIR/pacman-related/db'
-echo '# sed "s:REPO_DIR:$REPO_DIR:" ./config/pacman.conf.template > "$REPO_DIR/nsc/pacman.conf"'
+echo '# sed "s:REPO_DIR:$REPO_DIR:" ./config/pacman.conf.template > "$REPO_DIR/pacman-related/pacman.conf"'
