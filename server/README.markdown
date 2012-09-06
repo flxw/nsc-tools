@@ -28,7 +28,7 @@ Then, login as the new repository user and clone the repository into his home di
 	$ cd server
 
 Now, edit `~/nsc-tools/server/config/nsc-server.conf` to your liking.
-Afterwards, do:
+Afterwards, do (still as the repository user):
 
 	$ cd ~/nsc-tools/server
 	$ ./install.sh
@@ -46,10 +46,9 @@ Login as your repository user and do the following to create a
 new mirrorlist and update the repository's pacman sync database.
 
 	$ source ~/nsc-tools/server/nsc-server.conf
-	$ cd $REPO_DIR/nsc
+	$ cd $REPO_DIR/pacman-related
 	$ reflector -l 5 --sort rate --save mirrorlist
-	$ cd ..
-	$ sudo pacman --dbpath db --config nsc/pacman.conf --noconfirm -Syy
+	$ sudo pacman --dbpath db --config pacman.conf --noconfirm -Syy
 
 ## cronjob setup
 All that remains to be done is the cronjob setup, so updates are downloaded automatically.
@@ -63,7 +62,7 @@ Additionally, it will purge old and unneeded packages from the cache.
 
 ## SAMBA setup
 Set up your SAMBA so that it shares the freshly created pacman cache
-as a public read-only share. A minimal working example  of a SAMBA configuration would look like this:
+as a public read-only share. A minimal working example  of a SAMBA configuration could look like this:
 
     [global]
     workgroup     = WORKGROUP
